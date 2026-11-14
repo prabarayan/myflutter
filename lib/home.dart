@@ -5,7 +5,6 @@ import 'package:flutter_application_1/widgets/custom_button.dart';
 import 'package:flutter_application_1/widgets/custom_column.dart';
 import 'dart:math';
 import 'package:flutter_application_1/widgets/custom_container.dart';
-import 'package:collapsible_sidebar/collapsible_sidebar.dart';
 
 enum G { m, f }
 
@@ -13,12 +12,10 @@ class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _HomeState createState() => _HomeState();
+  HomeState createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
-    final  _isMenuOpen = true;
+class HomeState extends State<Home> {
   final activeColor = Colors.white30;
   final inactiveColor = Colors.white12;
    G isSelected=G.m;
@@ -34,50 +31,19 @@ class _HomeState extends State<Home> {
         title: Text('Prabaharan'),
         backgroundColor: Colors.blue,
       ),
-      body: Row(
-        // child:SidebarPage(),
-        children: [
-          // 1. ANIMATED LEFT SLIDEBAR MENU WIDGET
-          SizedBox(
-            // duration: const Duration(milliseconds: 300),
-            // curve: Curves.easeInOut,
-            width: _isMenuOpen ? 60 : 0, 
-            height:MediaQuery.of(context).size.height,// Shrinks to 0 when closed
-            child:Container(
-              color: Colors.green[900],
-              // SingleChildScrollView prevents overflow errors during animation
-              child: SingleChildScrollView(
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  children: [
-                    // const SizedBox(height: 20),
-                  
-                    const SizedBox(height: 12),
-                    
-                    // const Divider(color: Colors.white24, height: 32),
-                    _buildMenuItem(Icons.dashboard, 'Dashboard'),
-                    _buildMenuItem(Icons.analytics, 'Analytics'),
-                    _buildMenuItem(Icons.pie_chart, 'Reports'),
-                    _buildMenuItem(Icons.settings, 'Settings'),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-        Expanded(
-        child:Container(
-          padding: EdgeInsets.all(12),
+      body: Container(
+        padding: const EdgeInsets.all(12),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Row(
                 children: [
                   Expanded(
                     child: CustomContainer(
-                      color: isSelected == G.m ? activeColor : inactiveColor,
+                      color: isSelected == G.f ? activeColor : inactiveColor,
                       onTap: () {
                         setState(() {
-                          isSelected = G.m;
+                          isSelected = G.f;
                         });
                       },
                       height: 50,
@@ -96,10 +62,10 @@ class _HomeState extends State<Home> {
                   ),
                   Expanded(
                     child: CustomContainer(
-                      color: isSelected == G.f ? activeColor : inactiveColor,
+                      color: isSelected == G.m ? activeColor : inactiveColor,
                       onTap: () {
                         setState(() {
-                          isSelected = G.f;
+                          isSelected = G.m;
                         });
                       },
                       height: 50,
@@ -121,7 +87,7 @@ class _HomeState extends State<Home> {
               ),
               CustomContainer(
                 color: inactiveColor,
-                height: 100,
+                height: 120,
                 width: 350,
                 onTap: () {  },
                 child: CustomColumn(
@@ -157,7 +123,7 @@ class _HomeState extends State<Home> {
                   Expanded(
                     child: CustomContainer(
                       color: inactiveColor,
-                      height: 115,
+                      height: 135,
                       width: 100,
                       onTap: (){},
                       child: CustomColumn(
@@ -198,7 +164,7 @@ class _HomeState extends State<Home> {
                   Expanded(
                     child: CustomContainer(
                       color: inactiveColor,
-                      height: 115,
+                      height: 135,
                       width: 100,
                       onTap: () {  },
                       child: CustomColumn(
@@ -268,10 +234,10 @@ class _HomeState extends State<Home> {
                   Expanded(
                     child: CustomContainer(
                       onTap: () {
-                        double bmi = weight / pow(height / 100, 2);
+                        final double bmiValue = weight / pow(height / 100, 2);
 
                         setState(() {
-                          bmi = bmi;
+                          bmi = bmiValue.toStringAsFixed(1);
                         });
                       },
                       width: double.infinity,
@@ -295,31 +261,32 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: 10,
               ),
-              Expanded(
+              SizedBox(
+                height: 180,
                 child: CustomContainer(
                   width: double.infinity,
-                  
-                  color: inactiveColor, 
-                  height: 100,
-                  onTap: (){},
+                  color: inactiveColor,
+                  height: 180,
+                  onTap: () {},
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'YOUR BMI IS',
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 10),
                       Text(
-                        bmi,
-                        style: TextStyle(
-                            fontSize: 100, fontWeight: FontWeight.bold),
-                      )
+                        bmi.isEmpty ? '0.0' : bmi,
+                        style: const TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -327,133 +294,6 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        ),
-        ],
-      ),
-    );
-  }
-}
- // Helper widget to build menu list tiles
-  Widget _buildMenuItem(IconData icon, String title) {
-    return Material(
-    color: const Color(0xFF1E1E1E), // 👈 Safe background color
-    child: ListTile(
-      leading: Icon(icon, color: Colors.white70),
-      title: Text(title, style: const TextStyle(color: Colors.white70)),
-      onTap: () {},
-    ),
-  );
-  }
-class SidebarPage extends StatefulWidget {
-  @override
-  _SidebarPageState createState() => _SidebarPageState();
-}
-
-class _SidebarPageState extends State<SidebarPage> {
-  late List<CollapsibleItem> _items;
- late String _headline;
-  final AssetImage _avatarImg = AssetImage('assets/test.png');
-
-  @override
-  void initState() {
-    super.initState();
-    _items = _generateItems;
-    _headline = _items.firstWhere((item) => item.isSelected).text;
-  }
-
-  List<CollapsibleItem> get _generateItems {
-    return [
-      CollapsibleItem(
-        text: 'GeeksforGeeks',
-        icon: Icons.school_outlined,
-        onPressed: () => setState(() => _headline = 'Geeks For Geeks'),
-        isSelected: true,
-      ),
-      CollapsibleItem(
-        text: 'Flutter',
-        icon: Icons.flutter_dash_outlined,
-        onPressed: () => setState(() => _headline = 'Flutter'),
-      ),
-      CollapsibleItem(
-        text: 'HTML',
-        icon: Icons.html_outlined,
-        onPressed: () => setState(() => _headline = 'HTML'),
-      ),
-      CollapsibleItem(
-        text: 'CSS',
-        icon: Icons.css_outlined,
-        onPressed: () => setState(() => _headline = 'CSS'),
-      ),
-      CollapsibleItem(
-        text: 'JavaScript',
-        icon: Icons.javascript_outlined,
-        onPressed: () => setState(() => _headline = 'JavaScript'),
-      ),
-      CollapsibleItem(
-        text: 'Home',
-        icon: Icons.home,
-        onPressed: () => setState(() => _headline = 'Home'),
-      ),
-      
-    ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: CollapsibleSidebar(
-        isCollapsed: MediaQuery.of(context).size.width <= 800,
-        items: _items,
-        avatarImg: _avatarImg,
-        title: 'MS471841',
-        onTitleTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Yay! Flutter Collapsible Sidebar!')));
-        },
-        body: _body(size, context),
-        selectedIconBox: Colors.transparent,
-       unselectedTextColor: Colors.white,
-       unselectedIconColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 44, 129, 47),
-        selectedTextColor: Color.fromARGB(255, 65, 68, 255),
-        textStyle: TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
-        titleStyle: TextStyle(
-            fontSize: 20,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold),
-        toggleTitleStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        sidebarBoxShadow: [
-          BoxShadow(
-            color: Color.fromARGB(255, 63, 181, 171),
-            blurRadius: 20,
-            spreadRadius: 0.01,
-            offset: Offset(3, 3),
-          ),
-          BoxShadow(
-            color: Color.fromARGB(255, 77, 240, 83),
-            blurRadius: 50,
-            spreadRadius: 0.01,
-            offset: Offset(3, 3),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _body(Size size, BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: Color.fromARGB(255, 255, 255, 255),
-      child: Center(
-        child: Text(
-          
-              _headline,
-              style: Theme.of(context).textTheme.displayMedium,
-              overflow: TextOverflow.visible,
-              softWrap: false,
-            ),
       ),
     );
   }
